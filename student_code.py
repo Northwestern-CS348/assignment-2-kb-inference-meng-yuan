@@ -247,11 +247,11 @@ class InferenceEngine(object):
             [fact.statement, rule.lhs, rule.rhs])
         ####################################################
         # Student code goes here
-        b = match( fact.statement,rule.lhs[0])
-        if b == False:
+        b = match(fact.statement, rule.lhs[0])
+        if b == False or len(rule.lhs) == 0:
             return
-        if len(rule.lhs) == 0:
-            return
+
+        # if only 1 lhs, infer new fact
         if len(rule.lhs) == 1:
             newfact = Fact(instantiate(rule.rhs, b), [[fact,rule]])
             #print newfact
@@ -260,18 +260,18 @@ class InferenceEngine(object):
             kb.kb_add(newfact)
             #newfact.supported_by.append([fact,rule])
 
-        #more than one lhs
+        # if more than 1 lhs, infer new rule
         else:
-            locallhs = []
-            localrule = []
+            lhs1 = []
+            nrule = []
             for i in range(1, len(rule.lhs)):
-                locallhs.append(instantiate(rule.lhs[i], b))
-            localrule.append(locallhs)
-            localrule.append(instantiate(rule.rhs, b))
-            newrule = Rule(localrule,[[fact, rule]])
+                lhs1.append(instantiate(rule.lhs[i], b))
+            nrule.append(lhs1)
+            nrule.append(instantiate(rule.rhs, b))
+            newrule = Rule(nrule,[[fact, rule]])
             rule.supports_rules.append(newrule)
             fact.supports_rules.append(newrule)
             kb.kb_add(newrule)
-            #newrule.supported_by.append([fact,rule])
+
 
 
